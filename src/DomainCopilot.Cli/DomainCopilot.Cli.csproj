@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <CorpusSourceDirectory Condition="'$(CorpusSourceDirectory)' == ''">$(MSBuildThisFileDirectory)../../corpus</CorpusSourceDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="$(CorpusSourceDirectory)/**/*" Link="corpus/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\..\eval\golden.jsonl" Link="eval\golden.jsonl" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <ProjectReference Include="..\DomainCopilot.Application\DomainCopilot.Application.csproj" />
+    <ProjectReference Include="..\DomainCopilot.Infrastructure\DomainCopilot.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
+
+

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\DomainCopilot.Domain\DomainCopilot.Domain.csproj" />
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.2" />
+    <None Include="..\..\prompts\answer_system.md" Link="prompts\answer_system.md"
+          CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

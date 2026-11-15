@@ -1,0 +1,31 @@
+# Slide Guide and Project Demo Cues
+
+Companion guide for `OWASP-LLM-in-Practice-Slides.pptx` (21 slides, 90-minute lesson). It maps what to teach to repository examples and identifies claims that need caveats.
+
+| Slide | Teaching point | Project example and exact location | Demo cue | Caveat |
+| --- | --- | --- | --- | --- |
+| 1 | LLM security in an industrial maintenance RAG system. | `README.md` D5/T0; `docs/BRD.md` context; corpus manifests. | 1 min: show repo and domain. | MVP, not certified or production-safe. |
+| 2 | Outcomes: injection, boundaries, least privilege, evaluation. | `docs/SECURITY.md`, `docs/ARCHITECTURE.md`, `eval/golden.jsonl`. | 2 min: point out evidence. | Outcomes are lesson goals, not claims all controls are complete. |
+| 3 | 90-minute route and lab transition. | `teaching/lesson-plan.md`, `teaching/lab/lab-sheet.md`. | 1 min: mark lab at minute 60. | Preserve practical time. |
+| 4 | Trusted code vs untrusted question/manual/retrieval/provider content. | `docs/ARCHITECTURE.md` trust-boundary/data-flow; `src/api/routers/ask.py`; `src/application/answering.py`; `src/application/orchestrator.py`. | Trace question -> retrieval -> provider -> validator, then workflow -> approval. | Provider receives configured prompt/evidence after boundary redaction, not just the question. |
+| 5 | Prompt injection differs from SQL injection; prompt delimiters are not a complete fix. | `src/infrastructure/chunk_search.py` parameterized SQL vs `_user_message`/`_evidence_block` in `src/application/answering.py`; `prompts/answer_system.md`. | Compare bound SQL values with evidence delimiters. | Prompt wording is defense-in-depth only. |
+| 6 | Ten LLM risks and overlap with Web Top 10. | Slide taxonomy; `docs/SECURITY.md`. | Ask learners to map one risk to a web control. | Do not conflate the two lists. |
+| 7 | Direct injection enters from user; indirect enters via document/tool. | Golden cases `alpha_direct_prompt_injection`, `alpha_indirect_prompt_injection`, `beta_indirect_prompt_injection`; corpus adversarial sections. | `rg -n "UNTRUSTED EMBEDDED INSTRUCTION|compromised" corpus` | Synthetic adversarial examples. |
+| 8 | Attack chain: ingest -> chunk -> retrieval -> model -> attempted action. | `corpus/tenant-alpha/air-compressor-preventive-maintenance.md`; `src/infrastructure/ingest.py`; `src/application/answering.py`; `src/application/orchestrator.py`. | Show compromised note and legitimate lubricant section. | Answer-level resistance is not measured. |
+| 9 | Defense in depth: provenance, prompt boundary, typed output, allow-list, human gate. | `answering.py` `_validate`; `tools.py`; `rules.py`; `runs.py`; `docs/SECURITY.md`. | Draw controls at each stage. | Ingest instruction detection is not implemented as a complete sanitizer. |
+| 10 | Instructions and retrieved data are separated for interpretation, not fully enforced. | `prompts/answer_system.md`; `_user_message` and `_evidence_block` in `answering.py`. | Open prompt and constructed user message. | Retrieved text still reaches the model. |
+| 11 | Improper output handling: schema validation, safe DOM, parameterized SQL, citation checks. | `src/application/tools.py`; `src/api/static/app.js` `textContent`; `answering.py`; `chunk_search.py`. | Show safe text rendering and `_validate`. | Deck's CreateWorkOrder type is illustrative; it is not that exact Pydantic contract. |
+| 12 | Excessive agency: least privilege and gated writes. | `src/application/tools.py` allow-lists; `tool_schemas.py`; `orchestrator.py`; `tests/unit/test_tool_registry.py`. | Show allow-list and test. | Registry definitions exist but runtime workflow calls repositories/search directly in places; see `docs/AGENTIC-WORKFLOW.md`. |
+| 13 | Sensitive disclosure and prompt leakage. | `src/application/redaction.py`; architecture provider flow; `docs/SECURITY.md`; `.env.example`. | Trace hosted vs local provider path. | Redaction is narrow; originals are stored. Never show `.env` secrets. |
+| 14 | Tenant isolation belongs in the database. | Migrations 001/002/004; `src/infrastructure/database.py`; `tests/integration/test_tenant_isolation.py`. | Show `app.tenant_id` and RLS policy. | A manual no-data response is smoke evidence, not full proof. |
+| 15 | Unbounded consumption controls. | `src/infrastructure/config.py` RUN_*; `src/api/main.py`; orchestrator; usage router. | Show actual limits and usage summary. | General/distributed rate limit and currency cost are gaps. |
+| 16 | Supply-chain risk vs data poisoning. | requirements files, `.github/workflows/ci.yml`, `.gitleaksignore`, poisoned corpus and security doc. | Show CI and hostile document text. | Requirements pinned, but no generated lockfile; scan config does not prove clean history. |
+| 17 | Misinformation is safety-relevant. | `answering.py`; `rules.py`; orchestrator; LOTO corpus. | Contrast cited answer with DB-backed safety steps. | Refusal recall 0/2; do not claim reliable refusal. |
+| 18 | Measure adversarial cases and report bad results. | `eval/golden.jsonl`, `eval/baseline.json`, `docs/EVALUATION.md`, `src/eval/run.py`. | Explain 20/23, 38/38, 23/25, 0/2. | No answer-level injection result due chat timeout. |
+| 19 | Safe, bounded lab. | `teaching/lab/lab-sheet.md`, `teaching/lab/answer-key.md`. | 20-minute paired exercise. | Use synthetic data and local demo only. |
+| 20 | Five rules: untrusted content, code enforcement, least privilege, isolation, measurement. | `docs/SECURITY.md`, `docs/EVALUATION.md`, tests. | Ask pairs for one control and one gap. | Require evidence, not assertion. |
+| 21 | Exit ticket and authoritative reading. | Assessment file; OWASP LLM Top 10 and prompt-injection references. | 5-minute individual response. | Key is in the assessment document. |
+
+## Demo setup and route
+Before class: start Compose, ingest synthetic corpus, verify seeded Alpha/Beta accounts, ensure a chat provider works if showing generation, and open slides 4, 8, 11, 14, 18. Never display `.env` values. Suggested sequence: architecture -> compromised note -> prompt/evidence boundary -> output checks -> RLS test -> workflow safety gate -> stored baseline. If the provider is unavailable, use source/tests and stored retrieval-only results; never fabricate an answer-level pass.
+

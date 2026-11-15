@@ -1,0 +1,2 @@
+# Optional corpus authoring verification only; not a .NET application dependency.
+pytest==9.1.1

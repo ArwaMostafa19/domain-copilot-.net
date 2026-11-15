@@ -1,0 +1,20 @@
+.git
+.env
+__pycache__
+*.pyc
+# .NET build outputs and local configuration
+**/bin/
+**/obj/
+.env
+.env.*
+!.env.example
+.git/
+
+# Optional Python corpus-authoring tools are excluded from the .NET build context.
+**/*.py
+**/*.pyc
+**/__pycache__/
+requirements*.txt
+.venv/
+venv/
+.corpus-original-junction-backup/
