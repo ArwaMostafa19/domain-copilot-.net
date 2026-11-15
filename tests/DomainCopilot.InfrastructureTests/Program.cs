@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using DomainCopilot.Application;
@@ -46,13 +46,22 @@ var tests = new (string Name, Action Run)[]
 };
 
 var failures = 0;
+var skipped = 0;
+var skipPythonExtractionParity = Environment.GetEnvironmentVariable("DOMAINCOPILOT_SKIP_PYTHON_EXTRACTION_PARITY") == "1";
 foreach (var (name, run) in tests)
 {
+    if (skipPythonExtractionParity && name == "selected corpus extraction matches Python reference signatures")
+    {
+        skipped++;
+        Console.WriteLine($"SKIP {name} (DOMAINCOPILOT_SKIP_PYTHON_EXTRACTION_PARITY=1)");
+        continue;
+    }
+
     try { run(); Console.WriteLine($"PASS {name}"); }
     catch (Exception error) { failures++; Console.WriteLine($"FAIL {name}: {error.GetType().Name}: {error.Message}"); }
 }
 Console.WriteLine($"PostgreSQL opt-in integration: {PostgresOptInIntegrationTests.RunIfEnabled()}");
-Console.WriteLine($"{tests.Length - failures}/{tests.Length} Infrastructure tests passed.");
+Console.WriteLine($"{tests.Length - failures - skipped}/{tests.Length - skipped} Infrastructure tests passed; {skipped} test(s) skipped.");
 return failures == 0 ? 0 : 1;
 
 static void ConfigurationBehavior()
