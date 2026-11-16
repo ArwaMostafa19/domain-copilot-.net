@@ -46,5 +46,9 @@ Compose builds the .NET 9 API and PostgreSQL 16 + pgvector. PostgreSQL data is s
 
 Run `dotnet build DomainCopilot.sln --configuration Release`, then the package-free runners under `tests/DomainCopilot.*Tests`. The opt-in PostgreSQL suite requires a newly created disposable PG16+pgvector database and explicit safety variables; never point it at a user database. Browser, database, and Docker checks must be reported only when actually run.
 
+## Demo videos
+
+1. **Slide presentation** — [https://drive.google.com/drive/folders/1ztD-UBLIeWyhsi1Jy4G-9TIYv6M7YKfD?usp=sharing](#)
+2. **Project demo** — [https://drive.google.com/drive/folders/1SAxbr6ZxXGkH3hb_B8sA4PW2r4YBUUxU?usp=sharing](#)
 
 
