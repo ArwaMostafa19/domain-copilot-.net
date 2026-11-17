@@ -226,4 +226,5 @@ CORPUS-QUALITY-REVIEW.md
 # .NET build outputs
 **/bin/
 **/obj/
+# External junction to the read-only Python Corpus; active .NET data is tracked under corpus/.
 .corpus-original-junction-backup/
