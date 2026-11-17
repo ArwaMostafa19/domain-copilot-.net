@@ -123,13 +123,6 @@ Infrastructure includes provider and extractor tests. PostgreSQL opt-in requires
 
 tests/unit/test_corpus.py is optional Python corpus-authoring validation, not .NET runtime. eval/baseline.json contains historical Python measurements, not .NET results. .NET eval currently measures retrieval only; no answer-quality/refusal-calibration result is documented.
 
-## Study order
-
-Start with DomainCopilot.sln and project references; then Domain models and Application/Contracts/Ports.cs; then HybridRetrieval.cs, AnswerService.cs, WorkflowOrchestrator.cs; then ProviderFactory.cs, PostgresConnections.cs, repositories, and MigrationRunner.cs; finally ApiHost.cs, ApiContracts.cs, ApiEndpoints.cs, static files, CLI/Program.cs, and scripts.
-
-For POST /ask, trace ApiEndpoints to AnswerService.AnswerQuestion, HybridRetrieval.Retrieve, IEmbedder/IChunkSearch implementations, then citation validation. Add providers behind ILlmProvider in Infrastructure and test malformed data, fallback, streaming, timeout, and cancellation. Add endpoints in API while keeping business rules in Application and SQL in Infrastructure. For workflow changes, test roles, tenant ownership, event order, transitions, and cancellation.
-
-See the [Egyptian Arabic migration and learning guide](docs/PYTHON-TO-DOTNET-MIGRATION-GUIDE-AR.md).
 
 ## Demo videos
 
