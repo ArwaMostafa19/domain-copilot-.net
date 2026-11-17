@@ -1,2 +1,7 @@
-884529c6c7b3ec60352b346f668b8f399fcbaed1:tests/unit/test_llm_config.py:generic-api-key:80
-55932ae6212a3482b03d0ffe0f67696b84c3967a:src/application/answering.py:generic-api-key:26
+# Exact historical false positives only. Current working-tree values were replaced or annotated.
+# .env.example AUTH_SECRET was a template placeholder, not a credential; the current sample remains validation-compatible.
+25e682a521c7fcaf7271b96d8d84f9ee11f4e7d5:.env.example:generic-api-key:9
+# AnswerService CanaryToken is an intentional synthetic prompt-injection marker mirrored from the read-only Python source.
+25e682a521c7fcaf7271b96d8d84f9ee11f4e7d5:src/DomainCopilot.Application/Answering/AnswerService.cs:generic-api-key:17
+# ApplicationTests used a synthetic Python-compatible token signed with a test-only key; current test assembles it at runtime.
+25e682a521c7fcaf7271b96d8d84f9ee11f4e7d5:tests/DomainCopilot.ApplicationTests/Program.cs:generic-api-key:210

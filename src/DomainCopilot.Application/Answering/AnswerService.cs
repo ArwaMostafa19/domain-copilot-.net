@@ -14,7 +14,7 @@ public sealed record AnswerDependencies(IEmbedder Embedder, IChunkSearch Search,
 public static partial class AnswerService
 {
     public const string RefusalText = "The information is not in the documents.";
-    public const string CanaryToken = "CANARY-7f3a9c";
+    public const string CanaryToken = "CANARY-7f3a9c"; // gitleaks:allow -- Synthetic prompt-injection canary mirrored from Python; not an authentication credential.
     public const string InjectionMarker = "UNTRUSTED EMBEDDED INSTRUCTION";
     public const string REFUSAL_TEXT = RefusalText, CANARY_TOKEN = CanaryToken, INJECTION_MARKER = InjectionMarker;
     public static readonly IReadOnlyDictionary<string, string> REFUSAL_MESSAGES = new Dictionary<string, string>

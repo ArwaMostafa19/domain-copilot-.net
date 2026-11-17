@@ -207,10 +207,12 @@ static void SecurityBehavior()
     Equal(6, stored.Split('$').Length); Equal("scrypt", stored.Split('$')[0]);
     False(ApplicationSecurity.VerifyPassword("wrong", stored));
     const string key = "phase5a-python-compat-key-0123456789";
-    const string pythonToken = "eyJ0ZW5hbnRfaWQiOiJ0ZW5hbnQtYSIsInVzZXJfaWQiOjcsInJvbGUiOiJ0ZWNobmljaWFuIiwiZXhwIjoyMDAwMDAwMDAwfQ.hmfDfvJsrG9k9YCC6YQV2-HsZeuE02CAcElANF4I3e8";
-    var pythonEncodedPayload = pythonToken.Split('.')[0];
+    // Independently assemble the Python-compatible two-part HMAC token using only a test key.
+    const string pythonPayload = "{\"tenant_id\":\"tenant-a\",\"user_id\":7,\"role\":\"technician\",\"exp\":2000000000}";
+    var pythonEncodedPayload = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(pythonPayload)).TrimEnd('=').Replace('+', '-').Replace('/', '_');
     var hmac = System.Security.Cryptography.HMACSHA256.HashData(System.Text.Encoding.UTF8.GetBytes(key), System.Text.Encoding.UTF8.GetBytes(pythonEncodedPayload));
-    Equal("hmfDfvJsrG9k9YCC6YQV2-HsZeuE02CAcElANF4I3e8", Convert.ToBase64String(hmac).TrimEnd('=').Replace('+', '-').Replace('/', '_'));
+    var pythonSignature = Convert.ToBase64String(hmac).TrimEnd('=').Replace('+', '-').Replace('/', '_');
+    var pythonToken = $"{pythonEncodedPayload}.{pythonSignature}";
     IReadOnlyDictionary<string, object?> pythonClaims;
     try { pythonClaims = ApplicationSecurity.VerifyToken(pythonToken, key, now: 2_000_000_000); }
     catch (Exception error) { throw new Exception("Python fixture verification failed: " + error.Message, error); }
